@@ -1,5 +1,7 @@
 package com.qazar.taskmanager.compose
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,11 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.qazar.taskmanager.FirebaseDAO
+import com.qazar.taskmanager.R
 import com.qazar.taskmanager.Task
+import com.qazar.taskmanager.activity.TaskFormActivity
 
 class MainView {
     private val taskList = mutableStateListOf<Task>()
@@ -64,12 +69,7 @@ class MainView {
 
     //@Preview(showBackground = true)
     @Composable
-    fun Preview(
-        imgTask: Int,
-        imgDelete: Int,
-        imgDoCloud: Int,
-        imgNotCloud: Int,
-    ) {
+    fun Preview() {
         val list = remember { taskList }
         Column(
             modifier = Modifier.fillMaxSize()
@@ -81,10 +81,6 @@ class MainView {
                     items(list) { task ->
                         ItemRow(
                             task = task,
-                            imgTask = imgTask,
-                            imgDelete = imgDelete,
-                            imgDoCloud = imgDoCloud,
-                            imgNotCloud = imgNotCloud,
                         )
                     }
                 }
@@ -97,7 +93,9 @@ class MainView {
                     modifier = Modifier.fillMaxWidth(0.5f).fillMaxHeight(), contentAlignment = Alignment.CenterStart
                 ) {
                     Button(onClick = {
-                        //addTask(uid,)
+                        val intent = Intent(, TaskFormActivity::class.java)
+                        intent.putExtra("taskObject", Task())
+                        startActivityForResult(intent, RESULT_OK)
                     }) {
                         Text(text = "Add")
                     }
@@ -120,23 +118,19 @@ class MainView {
     @Composable
     fun ItemRow(
         task: Task,
-        imgTask: Int,
-        imgDelete: Int,
-        imgDoCloud: Int,
-        imgNotCloud: Int,
     ) {
         var isExpander by remember { mutableStateOf(false) }
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(imgTask),
+                painter = painterResource(id = R.drawable.task),
                 contentDescription = "Task",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(64.dp).clip(CircleShape)
             )
             Image(
-                painter = painterResource(imgDoCloud),
+                painter = painterResource(id = R.drawable.cloud_done),
                 contentDescription = "isOnCloud",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(24.dp).clip(CircleShape)
@@ -154,7 +148,7 @@ class MainView {
                     }
                 }
             }
-            Image(painter = painterResource(imgDelete),
+            Image(painter = painterResource(id = R.drawable.delete),
                 contentDescription = "delete",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.padding(3.dp).size(64.dp).clip(CircleShape).clickable {

@@ -1,5 +1,6 @@
 package com.qazar.taskmanager.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -35,11 +36,22 @@ class MainActivity : ComponentActivity() {
     private var mainView: MainView = MainView()
 
     // [START declare_auth]
+    private lateinit var firebaseDAO: FirebaseDAO
     private lateinit var auth: FirebaseAuth
     private lateinit var taskSet: List<Task>
     // [END declare_auth]
 
     private lateinit var googleSignInClient: GoogleSignInClient
+
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Обработка результата от новой активности
+            val returnedObject = result.data?.getSerializableExtra("task") as? Task
+            returnedObject?.let { firebaseDAO.addTask(it) }
+            //result.data.getSerializableExtra("returnedObject",Task.javaClass)
+            // Теперь у вас есть возвращенный объект
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +60,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     //mainView = MainView()
-                    mainView.Preview(R.drawable.task, R.drawable.delete, R.drawable.cloud_done, R.drawable.cloud_off)
+                    mainView.Preview()
                 }
             }
         }
@@ -113,7 +125,7 @@ class MainActivity : ComponentActivity() {
     fun dao(user: FirebaseUser) {
         Toast.makeText(applicationContext, "Hello + ${user.displayName}", Toast.LENGTH_LONG).show()
 
-        val firebaseDAO = FirebaseDAO(user.uid)
+        firebaseDAO = FirebaseDAO(user.uid)
         firebaseDAO.connect(applicationContext)
 
 

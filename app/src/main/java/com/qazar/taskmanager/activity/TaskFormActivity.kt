@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ReportFragment.Companion.reportFragment
+import com.qazar.taskmanager.Task
 import com.qazar.taskmanager.compose.TaskFormView
 import com.qazar.taskmanager.ui.theme.TaskManagerTheme
 
@@ -19,7 +19,8 @@ class TaskFormActivity : ComponentActivity() {
             TaskManagerTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     val view = TaskFormView()
-                    view.TaskForm()
+                    val taskObject = intent.getParcelableExtra<Task>("task")
+                    view.TaskForm(taskObject)
                 }
             }
         }

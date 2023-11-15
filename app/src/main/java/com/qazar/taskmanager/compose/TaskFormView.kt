@@ -7,21 +7,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.qazar.taskmanager.Task
 import java.util.*
 
 class TaskFormView {
     @OptIn(ExperimentalMaterial3Api::class)
-    @Preview(showBackground = true)
     @Composable
     fun TaskForm(
-//        onTaskCreated: (Task) -> Unit
+        task: Task?
     ) {
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
-        var selectedDate by remember { mutableStateOf<Date?>(null) }
+        val selectedDate by remember { mutableStateOf<Date?>(null) }
 
         Column(modifier = Modifier.fillMaxSize().background(Color.Green)) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -51,9 +48,9 @@ class TaskFormView {
             )
 
             Button(onClick = {
-                val newTask = Task(
-                    title = title, description = description, time = selectedDate?.time
-                )
+//                val newTask = Task(
+//                    title = title, description = description, time = selectedDate?.time
+//                )
                 // onTaskCreated(newTask)
                 //title = ""
                 //description = ""
